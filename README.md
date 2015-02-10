@@ -1,5 +1,5 @@
 # About
-This project was born with the need of an iOS player that would have support for Gstreamer, and would bypass the undocumented iOS 5 hardware limitation of 4 concurrent video streams.
+This project was born with the need of an iOS player that would have support for Gstreamer and would bypass the undocumented iOS 5 hardware limitation of 4 concurrent video streams.
 
 ## Intro
 There are lots of times when our SDKs are limited and can't satisfy our needs. Sometimes this stops us from implementing great ideas, other times it makes us go to a certain length and implement solutions that are out of the box.
@@ -10,15 +10,15 @@ This was the case with one of the projects I've been recently involved in.
 The task for this project was to build an iOS application that would show up to 6 live cameras on the same screen, streaming through Gstreamer Data Protocol (GDP from here on). In simpler words, a video surveillance application.
 
 ## Task Analysis
-The iOS SDK offers two solutions for managing the playback of a video, be it from a file or from a network stream.
+The iOS SDK offers two solutions for managing the playback of a video, be it from a file or a network stream.
 1. The first and the most straightforward solution is the MPMoviePlayerController. This is a great player, but it has some drawbacks:
 - you can't customize its frame size for iPhone;
 - only one stream can be played at a time;
 - it doesn't have support for Gstreamer.
-2. The second solution is the AVPlayer. It is more advanced, a bit more complex and requires more effort to use. From Apple documentation, it can be noted that, indeed, this player can have multiple instances playing different sources at the same time, and every instance can have its custom size. It seems the only problem would be the support for GDP.
+2. The second solution is the AVPlayer. It is more advanced, a bit more complex, and requires more effort to use. From Apple documentation, it can be noted that, indeed, this player can have multiple instances playing different sources at the same time, and every instance can have its custom size. It seems the only problem would be the support for GDP.
 
 ###  AVPlayer
-Testing the AVPlayer went quite good, at the beginning. It worked perfectly with 2, 3 and 4 streams, the device could handle it with no big troubles and no significant increase in CPU and RAM usage. The tests were performed on an iPhone 3GS, an iPhone 4 and an iPad.
+Testing the AVPlayer went quite good, at the beginning. It worked perfectly with 2, 3, and 4 streams, the device could handle it with no big troubles and no significant increase in CPU and RAM usage. The tests were performed on an iPhone 3GS, an iPhone 4, and an iPad.
 
 But there was no way I could make it work with 5 or 6 streams. Only 4 of them would start, randomly. Two streams kept missing every time.
 
@@ -46,7 +46,7 @@ And this was the inspiration to build a custom iOS player. This player would sup
 The code located in the `src` folder contains the main parts to make this player work. I've split the code into 3 components:
 - `GDPParser` - deserializes the streaming data and parses it. I've used C here for more memory control and better performance.
 - `FrameDecoder` - decodes the data received from the GDPParser and builds an image from it. This part gave me some headaches, I had to use FFmpeg for decoding and image converting. 
-- `PlayerController` - orchestrates the work of the above two componnets. It calls the `GDPParser` when data is received, decodes the received data using `FrameDecoder`, and updates the UIImage of the player.
+- `PlayerController` - orchestrates the work of the above two components. It calls the `GDPParser` when data is received, decodes the received data using `FrameDecoder`, and updates the UIImage of the player.
 
 There are two things to mention here:
 - I skipped the networking part, but the main point here is to connect the streaming data handling to the `PlayersController`'s `streamingDataReceived` method.
@@ -64,5 +64,5 @@ Then, use the following build script (you need to be in the FFmpeg folder):
 This is valid for the current version of FFmpeg, which is 0.5.x. For future versions this might change, most probably it will.
 
 ## Conclusion
-Building an iOS custom player is deffinitely not an easy task. But with enough passion, inspiration, and patience, this is doable.
-Of course there is a lot left to be done. You need to handle streaming errors, maybe handle each video stream in a different thread, and build a beautiful UI.
+Building an iOS custom player is definitely not an easy task. But with enough passion, inspiration, and patience, this is doable.
+Of course, there is a lot left to be done. You need to handle streaming errors, maybe handle each video stream in a different thread, and build a beautiful UI.
